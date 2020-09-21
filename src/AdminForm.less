@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    // background-color: pink;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+
+    width: 80%;
+    height: fit-content;
+    min-height: 300px;
+
+    .item {
+        flex-basis: 50%;
+        flex-grow: 0;
+        .relative {
+            position: 'relative';
+        }
+    }
+}
+
+.text {
+    position: absolute;
+    bottom: 0px;
+    width: 50%;
+}
+
+.absolute-title {
+    font-family: Raleway;
+    margin: 0;
+    margin-bottom: 50px;
+    font-size: 8em;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 100px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #FFFFFF;
+}
+.subtitle {
+    font-family: Raleway;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1.1em;
+    line-height: 37px;
+    color: #FFFFFF;
+}
