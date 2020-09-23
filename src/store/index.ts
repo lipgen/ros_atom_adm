@@ -5,7 +5,8 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import createRootReducer from './reducers';
-import { createBrowserHistory } from 'history'
+import { createBrowserHistory } from 'history';
+import { ConnectedRouter, connectRouter, routerMiddleware } from'connected-react-router';
 
 declare global {
     interface Window {
@@ -23,6 +24,7 @@ export const store = createStore(
     createRootReducer(history),
     undefined,
     composeEnhancers(
-        applyMiddleware(thunk)
+        applyMiddleware(thunk),
+        applyMiddleware(routerMiddleware(history)),
     )
 );
