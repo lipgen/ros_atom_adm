@@ -5,10 +5,14 @@ import MainMenu from './MainMenu';
 function Header() {
     return (
         <div className='header flex-container'>
-            <div className='section one'>
+            {/* for offset from left */}
+            <div className='section one'></div>
+            <div className='section two'>
                 <MainMenu />
             </div>
-            <div className='section two'></div>
+            <div className='section three'>
+                
+            </div>
         </div>
     )
 }

@@ -3,25 +3,22 @@ import '../styles/App.less';
 
 function MainMenu() {
     return (
-        <div className='main-menu flex-container'>
-            <div className='section one'>
-                <div className='subsection'>
-                    <span>
-                        ОЦЕНКА РИСКА ПОДТОПЛЕНИЯ
-                    </span>
-                </div>
-                <div className='subsection'>
-                    <span>
-                        ОЦЕНКА РИСКОВ ЗАГРЯЗНЕНИЯ ГРУНОВЫХ ВОД
-                    </span>
-                </div>
-                <div className='subsection'>
-                    <span>
-                        ООЦЕНКА РИСКОВ ВОЗНИКНОВЕНИЯ НЕБЛАГОПРИЯТНЫХ ПОСЛЕДСТВИЙ СВЯЗАННЫХ С КАЧЕСТВОМ ПОДЗЕМНЫХ ВОД ТЕРРИТОРИИ
-                    </span>
-                </div>
+        <div className='main-menu flex-container flex-row'>
+            <div className='section'>
+                <span className='item'>
+                    ОЦЕНКА РИСКА ПОДТОПЛЕНИЯ
+                </span>
             </div>
-            <div className='section two'></div>
+            <div className='section'>
+                <span  className='item'>
+                    ОЦЕНКА РИСКОВ ЗАГРЯЗНЕНИЯ ГРУНОВЫХ ВОД
+                </span>
+            </div>
+            <div className='section'>
+                <span  className='item'>
+                    ООЦЕНКА РИСКОВ ВОЗНИКНОВЕНИЯ НЕБЛАГОПРИЯТНЫХ ПОСЛЕДСТВИЙ СВЯЗАННЫХ С КАЧЕСТВОМ ПОДЗЕМНЫХ ВОД ТЕРРИТОРИИ
+                </span>
+            </div>
         </div>
     )
 }
