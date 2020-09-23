@@ -1,6 +1,6 @@
 import React from 'react';
 import RosAtomLogo from '../RosAtomLogo'
-import AdminForm from '../AdminForm';
+import AdminForm from '../components/AdminForm';
 
 function SignIn() {
   

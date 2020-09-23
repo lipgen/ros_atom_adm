@@ -1,5 +1,5 @@
 import React from 'react'
-import './AdminForm.less';
+import '../styles/AdminForm.less';
 import {Form, Input, Button} from 'antd';
 
 function AdminForm() {

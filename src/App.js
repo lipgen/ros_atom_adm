@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.less';
+import './styles/App.less';
 import AppRouter from './appRouter';
 import {connect} from 'react-redux';
 
