@@ -1,6 +1,7 @@
 import React from 'react'
 import '../styles/App.less';
 import MainMenu from './MainMenu';
+import Profile from './Profile';
 
 function Header() {
     return (
@@ -11,7 +12,7 @@ function Header() {
                 <MainMenu />
             </div>
             <div className='section three'>
-                
+                <Profile />
             </div>
         </div>
     )
