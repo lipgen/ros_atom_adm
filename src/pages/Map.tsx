@@ -13,12 +13,7 @@ function Map() {
                 <div className='section one h70-fit'>
                     <Header />
                 </div>
-                <div className='section two h70-100'>
-
-                </div>
-                <div className='section three'>
-                    {/* <Osm /> */}
-                </div>
+                <div className='section two h70-100'></div>
             </div>
         </>
     )

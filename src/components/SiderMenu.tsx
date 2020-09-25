@@ -17,7 +17,7 @@ function SiderMenu() {
             <ul className='list'>
                 {items.map(
                     (item, i) => <li key={i}>
-                        <p className='sider-text'>{item}</p>
+                        <span className='sider-text'>{item}</span>
                     </li>
                 )}
             </ul>
