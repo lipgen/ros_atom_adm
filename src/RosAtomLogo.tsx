@@ -1,8 +1,8 @@
 import React from 'react'
 
-function admin() {
+function admin(props: any) {
     return (
-        <div className='ros-atom-logo'></div>
+        <div className={`${props.light ? `light` : `ros-atom-logo`}`} style={props.style}></div>
     )
 }
 
