@@ -1,0 +1,37 @@
+@import './App.less';
+
+.sider-menu {
+    overflow: hidden;
+    position: absolute;
+    z-index: 900;
+    height: 100%;
+    background: @blue-back;
+    width: 19.85%;
+    min-width: 200px;
+    .list {
+        height: 100%;
+        margin-left: 10px;
+        margin-top: 150px;
+        list-style: none;
+        padding: 0;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        li {
+            padding: 10px 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        li:hover {
+            border-left: 2px solid #fff;
+            cursor: pointer;
+            p {
+                font-weight: bold !important;
+            }
+        }
+    }
+    .sider-text {
+        font-family: Raleway;
+        font-weight: normal;
+        font-size: 13px;
+        vertical-align: Top;
+        color: #fff;
+    }
+}
