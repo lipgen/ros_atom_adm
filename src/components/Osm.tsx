@@ -11,9 +11,9 @@ type State = {
 
 export default class Osm extends Component<{}, State> {
   state = {
-    lat: 51.505,
-    lng: -0.09,
-    zoom: 13,
+    lat: 59.8873,
+    lng: 29.1103,
+    zoom: 11,
   }
 
   render() {
@@ -21,12 +21,12 @@ export default class Osm extends Component<{}, State> {
     console.log('position', position);
     
     return (
-      <Map center={[50, -1]} zoom={this.state.zoom}>
+      <Map center={[this.state.lat, this.state.lng]} zoom={this.state.zoom}>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {/* <Marker position={[50, -1]}>
+        {/* <Marker position={[this.state.lat, this.state.lng]}>
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
