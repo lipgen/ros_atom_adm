@@ -1,16 +1,29 @@
 .map {
     position: relative;
     z-index: 1000;
-    .h100-200 {
-        min-height: 100px;
-        max-height: 200px;
+    .m-one {
+        height: 10vh;
     }
-    .h70-100 {
-        min-height: 70px;
-        max-height: 100px;
+    .m-two {
+        height: 10vh;
     }
-    .h70-fit {
-        min-height: 70px;
-        max-height: fit-content;
+    .m-three {
+        height: 80vh;
     }
+    .m-three-sub-one {
+        flex-basis: 19.85%;
+    }
+    .m-three-sub-two {
+        flex-grow: 1;
+    }
+}
+
+.map-viewport {
+    position: absolute;
+    left: 20%;
+    height: 78.1%;
+    width: 80%;
+}
+.leaflet-container {
+    height: 100%;
 }

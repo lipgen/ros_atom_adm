@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import L from 'leaflet';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 type State = {
   lat: number,
@@ -25,11 +26,11 @@ export default class Osm extends Component<{}, State> {
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[50, -1]}>
+        {/* <Marker position={[50, -1]}>
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
-        </Marker>
+        </Marker> */}
       </Map>
     )
   }
