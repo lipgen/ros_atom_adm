@@ -1,20 +1,23 @@
-@import './App.less';
+@import "./App.less";
 
-.sider div:nth-child(1) {
-    flex-grow: 1;
-}
+// .sider div:nth-child(1) {
+//   flex-grow: 1;
+// }
 .sider {
-    min-width: 200px;
-    background: @blue-back;
+  min-width: 200px;
+  height: 100px;
+  background: @blue-back;
+
+  &-logo__wrapper {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .menu-icon {
-    display: flex;
-    justify-content: center;
-    margin-left: -50%;
-    color: #fff;
-    font-size: 1.250em;
+  color: #fff;
+  font-size: 1.25em;
 }
 .menu-icon:hover {
-    cursor: pointer;
+  cursor: pointer;
 }

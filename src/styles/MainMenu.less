@@ -1,26 +1,28 @@
-@import './App.less';
+@import "./App.less";
 
 .main-menu {
-    gap: 20px;
-    margin: 10px 20px 10px 20px;
-    .section {
-        // max-width: 200px;
-        padding: 0 5px;
-        border-left: 2px solid #fff;
-    }
-    .section:hover{
-        border-left: 2px solid @blue-text;
-        cursor: pointer;
-        .item {
-            color: @blue-text;
-        }
-    }
+  gap: 20px;
+  height: 100%;
+  padding: 0 34px;
+  align-items: center;
+  .section {
+    // max-width: 200px;
+    padding: 0 5px;
+    border-left: 2px solid #fff;
+  }
+  .section:hover {
+    border-left: 2px solid @blue-text;
+    cursor: pointer;
     .item {
-        font-family: Raleway;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 0.750em;
-        line-height: 18px;
-        color: @grey-text;
+      color: @blue-text;
     }
+  }
+  .item {
+    font-family: Raleway;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 0.75em;
+    line-height: 18px;
+    color: @grey-text;
+  }
 }
