@@ -12,6 +12,7 @@
     "@types/react-leaflet": "^2.5.2",
     "@types/react-redux": "^7.1.9",
     "antd": "^4.6.5",
+    "axios": "^0.20.0",
     "connected-react-router": "^6.8.0",
     "craco-less": "^1.17.0",
     "history": "^5.0.0",
@@ -24,6 +25,7 @@
     "react-scripts": "3.4.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "typesafe-actions": "^5.1.0",
     "typescript": "^4.0.3"
   },
   "scripts": {

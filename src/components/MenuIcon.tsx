@@ -25,9 +25,12 @@ const MenuSvg = () => (
   </svg>
 );
 
-interface MenuIconProps {} //TODO fix props interface
+type MenuIconProps = {
+  className?: string;
+  style?: React.CSSProperties;
+};
 
-const MenuIcon = (props: MenuIconProps) => (
+const MenuIcon: React.FC<MenuIconProps> = (props) => (
   <Icon component={MenuSvg} {...props} />
 );
 
