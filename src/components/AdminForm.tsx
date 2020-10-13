@@ -76,7 +76,8 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<AppState, void, Action>
 ) => {
   return {
-    onLoginClick: () => dispatch(authenticate("email", "password")),
+    onLoginClick: (email: string, password: string) =>
+      dispatch(authenticate(email, password)),
   };
 };
 

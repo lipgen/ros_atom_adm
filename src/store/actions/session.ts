@@ -27,8 +27,7 @@ export const getUserData = createAction(GET_USER_DATA)<Profile>();
 
 export function authenticate(email: string, password: string) {
   return async (dispatch: Dispatch<Session, void, Action>) => {
-    dispatch(setLoading);
-    console.log("dispatched");
+    console.log("dispatched", email, password);
     return await api
       .get("/auth")
       .then((response) => {
