@@ -1,4 +1,4 @@
-import { AnyAction } from "redux";
+import { AnyAction, Reducer } from "redux";
 import {
   SET_SESSION,
   GET_USER_DATA,
@@ -11,6 +11,7 @@ export interface Profile {
   email: string;
   firstName: string;
   lastName: string;
+  patronimic: string;
 }
 
 export interface Session {
@@ -29,10 +30,10 @@ const initialState: Session = {
   profile: null,
 };
 
-export function SessionReducer(
+export const SessionReducer: Reducer<Session> = (
   state: Session = initialState,
   action: AnyAction //TODO refactor
-) {
+) => {
   switch (action.type) {
     case SET_SESSION: {
       localStorage.setItem("token", action.payload.token);
@@ -57,4 +58,4 @@ export function SessionReducer(
       return state;
     }
   }
-}
+};
