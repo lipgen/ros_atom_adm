@@ -7,22 +7,24 @@ import "leaflet-geotiff";
 import "leaflet-geotiff/leaflet-geotiff-plotty";
 import "leaflet-geotiff/leaflet-geotiff-vector-arrows";
 
+export type GeotiffOptions = {
+  arrowSize?: number;
+  band?: number;
+  image?: number;
+  name?: string;
+  pane?: string;
+  rendererOptions: {
+    opacity?: number;
+    colorScale?: string;
+    displayMin?: number;
+    displayMax?: number;
+  };
+  renderer?: Leaflet.Renderer;
+};
+
 export type GeotiffProps = MapLayerProps & {
   url: string;
-  options: {
-    arrowSize?: number;
-    band?: number;
-    image?: number;
-    name?: string;
-    pane?: string;
-    rendererOptions: {
-      opacity?: number;
-      colorScale?: string;
-      displayMin?: number;
-      displayMax?: number;
-    };
-    renderer?: Leaflet.Renderer;
-  };
+  options: GeotiffOptions;
   layerRef: React.RefObject<GeotiffLayer>;
 };
 

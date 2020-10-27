@@ -7,7 +7,7 @@ import {
   Popup,
   Tooltip,
 } from "react-leaflet";
-import { PlottyGeotiffLayer, GeotiffLayer } from "./GeotiffLayer";
+import { GeotiffLayer, PlottyGeotiffLayer } from "./GeotiffLayer";
 import { Item } from "./SiderMenu";
 import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
@@ -25,13 +25,13 @@ type Props = {
 };
 
 interface Osm {
-  tiffRef: React.RefObject<GeotiffLayer>;
+  overlayRef: React.RefObject<GeotiffLayer>;
 }
 
 class Osm extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.tiffRef = React.createRef();
+    this.overlayRef = React.createRef();
   }
 
   state = {
@@ -42,6 +42,7 @@ class Osm extends Component<Props, State> {
 
   render() {
     const position = [this.state.lat, this.state.lng];
+    const currentItem = this.props.selectedMenuItem;
 
     const hydroLayerOptions = {
       name: "Water level",
@@ -65,21 +66,6 @@ class Osm extends Component<Props, State> {
       pane: "overlayPane",
     };
 
-    const renderTiffLayer = (item: Item) => {
-      console.log(item);
-      return item !== Item.topography ? (
-        <Overlay name={item.toString()}>
-          <PlottyGeotiffLayer
-            layerRef={this.tiffRef}
-            options={
-              item === Item.hydro ? hydroLayerOptions : reliefLayerOptions
-            }
-            url={`http://localhost:8000/${Item[item]}.tif`}
-          />
-        </Overlay>
-      ) : null;
-    };
-
     return (
       <Map center={[this.state.lat, this.state.lng]} zoom={this.state.zoom}>
         <LayersControl position="topright">
@@ -89,7 +75,21 @@ class Osm extends Component<Props, State> {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </BaseLayer>
-          {renderTiffLayer(this.props.selectedMenuItem)}
+
+          <Overlay name={currentItem.toString()}>
+            {currentItem !== Item.topography ? (
+              <PlottyGeotiffLayer
+                layerRef={this.overlayRef}
+                options={
+                  currentItem === Item.hydro
+                    ? hydroLayerOptions
+                    : reliefLayerOptions
+                }
+                url={`http://localhost:8000/${Item[currentItem]}.tif`}
+              />
+            ) : null}
+          </Overlay>
+
           {/* {this.props.selectedMenuItem === Item.hydro
             ? renderTiffLayer(Item.relief)
             : renderTiffLayer(Item.hydro)} */}
