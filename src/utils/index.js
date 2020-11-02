@@ -1,3 +1,9 @@
+/**
+ * function for getting data from geotiff layer by point with lat and lng
+ * @param {{lat: number, lng: number}} point - selected point on map
+ * @param {GeotiffLayer} layer - GeotiffLayer
+ * @returns {number} value {number} from layer
+ */
 export const getDataFromLayer = (point, layer) => {
   if (!layer || !layer.leafletElement) return null;
 
@@ -16,9 +22,8 @@ export const getDataFromLayer = (point, layer) => {
         (rasterBounds._northEast.lat - rasterBounds._southWest.lat)
     );
   const i = y * raster.width + x;
-  console.log(x, y, i);
   const data = raster.data[i];
-  console.log("data", data);
+
   if (data !== undefined) {
     return data;
   } else {

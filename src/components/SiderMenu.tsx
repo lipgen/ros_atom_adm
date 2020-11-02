@@ -15,9 +15,10 @@ export enum Item {
   topography = "ТОПОГРАФИЧЕСКАЯ КАРТА" as any,
   hydro = "ГИДРОГЕОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI" as any,
   relief = "ГЕОМОРФОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI" as any,
+  inds_pd = "УРОВЕНЬ ГЛУБИНЫ ГРУНТОВЫХ ВОД" as any,
 }
 
-const items = [Item.topography, Item.hydro, Item.relief];
+const items = [Item.topography, Item.hydro, Item.relief, Item.inds_pd];
 
 type Props = {
   selectedItem: Item;

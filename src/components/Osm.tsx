@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import L, { LeafletMouseEvent } from "leaflet";
 import { LayersControl, Map, TileLayer, Marker, Tooltip } from "react-leaflet";
-import { GeotiffLayer, PlottyGeotiffLayer } from "./GeotiffLayer";
+import {
+  GeotiffLayer,
+  PlottyGeotiffLayer,
+  GeotiffOptions,
+} from "./GeotiffLayer";
 import { Item } from "./SiderMenu";
 import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
@@ -10,6 +14,46 @@ import { getDataFromLayer } from "../utils";
 const { Overlay, BaseLayer } = LayersControl;
 
 L.Icon.Default.imagePath = "img/";
+
+const getLayerOptions = (item: Item): GeotiffOptions => {
+  switch (item) {
+    case Item.hydro:
+      return {
+        name: "Water level",
+        rendererOptions: {
+          displayMin: 0,
+          displayMax: 259,
+          colorScale: "portland",
+        },
+        band: 1,
+        pane: "overlayPane",
+      };
+    case Item.relief:
+      return {
+        name: "Relief Layer",
+        rendererOptions: {
+          displayMin: 0,
+          displayMax: 254,
+          colorScale: "earth",
+        },
+        band: 1,
+        pane: "overlayPane",
+      };
+    case Item.inds_pd:
+      return {
+        name: "Intersection Layer",
+        rendererOptions: {
+          displayMin: 1,
+          displayMax: 5,
+          colorScale: "viridis",
+        },
+        band: 1,
+        pane: "overlayPane",
+      };
+    default:
+      return { rendererOptions: {} };
+  }
+};
 
 type State = {
   lat: number;
@@ -63,34 +107,11 @@ class Osm extends Component<Props, State> {
   render() {
     const position = [this.state.lat, this.state.lng];
     const currentItem = this.props.selectedMenuItem;
-
-    const hydroLayerOptions = {
-      name: "Water level",
-      rendererOptions: {
-        displayMin: 0,
-        displayMax: 259,
-        colorScale: "portland",
-      },
-      band: 1,
-      pane: "overlayPane",
-    };
-
-    const reliefLayerOptions = {
-      name: "Relief Layer",
-      rendererOptions: {
-        displayMin: 1,
-        displayMax: 254,
-        colorScale: "earth",
-      },
-      band: 1,
-      pane: "overlayPane",
-    };
+    const currentItemName: string = Item[currentItem];
 
     const roundCoordinate = (coordinate: number) => {
       return Number(coordinate).toFixed(4);
     };
-
-    console.log("this.overlayREf", this.overlayRef);
 
     return (
       <Map
@@ -114,19 +135,11 @@ class Osm extends Component<Props, State> {
             {currentItem !== Item.topography ? (
               <PlottyGeotiffLayer
                 layerRef={this.overlayRef}
-                options={
-                  currentItem === Item.hydro
-                    ? hydroLayerOptions
-                    : reliefLayerOptions
-                }
-                url={`http://localhost:8000/${Item[currentItem]}.tif`}
+                options={getLayerOptions(currentItem)}
+                url={`http://localhost:8000/${currentItemName}.tif`}
               />
             ) : null}
           </Overlay>
-
-          {/* {this.props.selectedMenuItem === Item.hydro
-            ? renderTiffLayer(Item.relief)
-            : renderTiffLayer(Item.hydro)} */}
 
           {this.state.selectedPoint && currentItem !== Item.topography ? (
             <Marker
@@ -134,9 +147,6 @@ class Osm extends Component<Props, State> {
                 this.state.selectedPoint.lat,
                 this.state.selectedPoint.lng,
               ]}
-              onclick={(event: LeafletMouseEvent) => {
-                console.log("marker click", event);
-              }}
             >
               <Tooltip permanent>
                 <div className="point-data">
