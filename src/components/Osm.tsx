@@ -52,7 +52,13 @@ class Osm extends Component<Props, State> {
     this.setState({ selectedPoint: point });
   }
 
-  getPointData() {}
+  componentDidUpdate(prevProps: Props) {
+    if (
+      this.state.selectedPoint &&
+      this.props.selectedMenuItem !== prevProps.selectedMenuItem
+    )
+      this.setSelectedPoint(null);
+  }
 
   render() {
     const position = [this.state.lat, this.state.lng];
