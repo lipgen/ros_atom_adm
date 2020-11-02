@@ -41,8 +41,10 @@ export class GeotiffLayer extends MapLayer<GeotiffProps> {
     }
   }
 
-  componentDidUpdate() {
-    if (this.props.leaflet) {
+  componentDidUpdate(prevProps: GeotiffProps) {
+    const isSameLayer = this.props.url === prevProps.url;
+    if (this.props.leaflet && !isSameLayer) {
+      console.log(this.props, prevProps);
       const { map } = this.props.leaflet;
       map?.removeLayer(this.leafletElement);
       this.leafletElement = this.createLeafletElement(this.props);

@@ -1,23 +1,24 @@
 import React, { Component } from "react";
-import {
-  LayersControl,
-  Map,
-  TileLayer,
-  Marker,
-  Popup,
-  Tooltip,
-} from "react-leaflet";
+import L, { LeafletMouseEvent } from "leaflet";
+import { LayersControl, Map, TileLayer, Marker, Tooltip } from "react-leaflet";
 import { GeotiffLayer, PlottyGeotiffLayer } from "./GeotiffLayer";
 import { Item } from "./SiderMenu";
 import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
+import { getDataFromLayer } from "../utils";
 
 const { Overlay, BaseLayer } = LayersControl;
+
+L.Icon.Default.imagePath = "img/";
 
 type State = {
   lat: number;
   lng: number;
   zoom: number;
+  selectedPoint: {
+    lat: number;
+    lng: number;
+  } | null;
 };
 
 type Props = {
@@ -38,7 +39,20 @@ class Osm extends Component<Props, State> {
     lat: 59.8873,
     lng: 29.1103,
     zoom: 11,
+    selectedPoint: null as {
+      lat: number;
+      lng: number;
+      value: number | null | undefined;
+    } | null,
   };
+
+  setSelectedPoint(
+    point: { lat: number; lng: number; value: number | null | undefined } | null
+  ) {
+    this.setState({ selectedPoint: point });
+  }
+
+  getPointData() {}
 
   render() {
     const position = [this.state.lat, this.state.lng];
@@ -47,7 +61,7 @@ class Osm extends Component<Props, State> {
     const hydroLayerOptions = {
       name: "Water level",
       rendererOptions: {
-        displayMin: 1,
+        displayMin: 0,
         displayMax: 259,
         colorScale: "portland",
       },
@@ -66,8 +80,22 @@ class Osm extends Component<Props, State> {
       pane: "overlayPane",
     };
 
+    const roundCoordinate = (coordinate: number) => {
+      return Number(coordinate).toFixed(4);
+    };
+
+    console.log("this.overlayREf", this.overlayRef);
+
     return (
-      <Map center={[this.state.lat, this.state.lng]} zoom={this.state.zoom}>
+      <Map
+        center={[this.state.lat, this.state.lng]}
+        zoom={this.state.zoom}
+        onclick={(event: LeafletMouseEvent) => {
+          const value = getDataFromLayer(event.latlng, this.overlayRef.current);
+          this.setSelectedPoint({ ...event.latlng, value });
+          console.log("event", event);
+        }}
+      >
         <LayersControl position="topright">
           <BaseLayer checked name={Item.topography.toString()}>
             <TileLayer
@@ -94,11 +122,36 @@ class Osm extends Component<Props, State> {
             ? renderTiffLayer(Item.relief)
             : renderTiffLayer(Item.hydro)} */}
 
-          {/* <Marker position={[this.state.lat, this.state.lng]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker> */}
+          {this.state.selectedPoint && currentItem !== Item.topography ? (
+            <Marker
+              position={[
+                this.state.selectedPoint.lat,
+                this.state.selectedPoint.lng,
+              ]}
+              onclick={(event: LeafletMouseEvent) => {
+                console.log("marker click", event);
+              }}
+            >
+              <Tooltip permanent>
+                <div className="point-data">
+                  <div className="point-data__coordinates">
+                    {`Координаты: [${roundCoordinate(
+                      this.state.selectedPoint.lat
+                    )}, ${roundCoordinate(this.state.selectedPoint.lng)}]`}
+                  </div>
+                  <div className="point-data__value">
+                    {`Значение: ${
+                      this.state.selectedPoint.value
+                        ? this.state.selectedPoint.value
+                        : "0"
+                    }`}
+                  </div>
+                </div>
+              </Tooltip>
+            </Marker>
+          ) : (
+            ""
+          )}
         </LayersControl>
       </Map>
     );
