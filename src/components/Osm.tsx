@@ -43,9 +43,9 @@ const getLayerOptions = (item: Item): GeotiffOptions => {
       return {
         name: "Intersection Layer",
         rendererOptions: {
-          displayMin: 1,
-          displayMax: 5,
-          colorScale: "viridis",
+          displayMin: 0,
+          displayMax: 255,
+          colorScale: "earth",
         },
         band: 1,
         pane: "overlayPane",
