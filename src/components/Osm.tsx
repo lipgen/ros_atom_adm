@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import L, { LeafletMouseEvent } from "leaflet";
-import { LayersControl, Map, TileLayer, Marker, Tooltip } from "react-leaflet";
+import { LayersControl, Map, TileLayer, Marker, Tooltip, GeoJSON, GeoJSONProps } from "react-leaflet";
 import {
   GeotiffLayer,
   PlottyGeotiffLayer,
@@ -9,7 +9,7 @@ import {
 import { Item } from "./SiderMenu";
 import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
-import { getDataFromLayer } from "../utils";
+import { getDataFromLayer, loadJSON } from "../utils";
 
 const { Overlay, BaseLayer } = LayersControl;
 
@@ -63,6 +63,7 @@ type State = {
     lat: number;
     lng: number;
   } | null;
+  geoJsonData: Object | null
 };
 
 type Props = {
@@ -88,12 +89,19 @@ class Osm extends Component<Props, State> {
       lng: number;
       value: number | null | undefined;
     } | null,
+    geoJsonData: [] as GeoJSON.GeoJsonObject[]
   };
 
   setSelectedPoint(
     point: { lat: number; lng: number; value: number | null | undefined } | null
   ) {
     this.setState({ selectedPoint: point });
+  }
+
+  componentDidMount() {
+    loadJSON('http://localhost:8000/cadastr.geojson', (data: GeoJSON.GeoJsonObject) => {
+      this.setState({ geoJsonData: [data] });
+    });
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -132,14 +140,18 @@ class Osm extends Component<Props, State> {
           </BaseLayer>
 
           <Overlay name={currentItem.toString()}>
-            {currentItem !== Item.topography ? (
+            {currentItem !== Item.topography && currentItem !== Item.cadastr ? (
               <PlottyGeotiffLayer
                 layerRef={this.overlayRef}
                 options={getLayerOptions(currentItem)}
                 url={`http://localhost:8000/${currentItemName}.tif`}
               />
-            ) : null}
+            ) : null}            
           </Overlay>
+
+          {currentItem === Item.cadastr && this.state.geoJsonData.length > 0 ? (
+              <GeoJSON key="cadastr" data={this.state.geoJsonData} />
+            ) : null }
 
           {this.state.selectedPoint && currentItem !== Item.topography ? (
             <Marker

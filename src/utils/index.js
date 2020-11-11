@@ -30,3 +30,21 @@ export const getDataFromLayer = (point, layer) => {
     return null;
   }
 };
+
+/**
+ * function for getting json from server
+ * @param {string} url - server url address
+ * @param {callback} callback
+ * @returns {void} void
+ */
+export function loadJSON(url, callback) {   
+  var xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open('GET', url, true);
+  xobj.onreadystatechange =  () => {
+     if (xobj.readyState == 4 && xobj.status == "200") {
+        callback(JSON.parse(xobj.responseText));
+     }
+  };
+  xobj.send(null);  
+}
