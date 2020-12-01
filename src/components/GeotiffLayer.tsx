@@ -18,6 +18,8 @@ export type GeotiffOptions = {
     colorScale?: string;
     displayMin?: number;
     displayMax?: number;
+    clampLow?: boolean;
+    clampHigh?: boolean;
   };
   renderer?: Leaflet.Renderer;
 };

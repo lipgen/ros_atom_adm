@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import L, { LeafletMouseEvent } from "leaflet";
-import { LayersControl, Map, TileLayer, Marker, Tooltip, GeoJSON, GeoJSONProps } from "react-leaflet";
+import { LayersControl, Map, TileLayer, Marker, Tooltip, GeoJSON, GeoJSONProps, Circle } from "react-leaflet";
 import {
   GeotiffLayer,
   PlottyGeotiffLayer,
@@ -10,6 +10,7 @@ import { Item } from "./SiderMenu";
 import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
 import { getDataFromLayer, loadJSON } from "../utils";
+import { Modal, Button, List, Typography, Divider } from 'antd';
 
 const { Overlay, BaseLayer } = LayersControl;
 
@@ -21,7 +22,8 @@ const getLayerOptions = (item: Item): GeotiffOptions => {
       return {
         name: "Water level",
         rendererOptions: {
-          displayMin: 0,
+          clampLow: false,
+          displayMin: 1,
           displayMax: 259,
           colorScale: "portland",
         },
@@ -32,7 +34,8 @@ const getLayerOptions = (item: Item): GeotiffOptions => {
       return {
         name: "Relief Layer",
         rendererOptions: {
-          displayMin: 0,
+          clampLow: false,
+          displayMin: 1,
           displayMax: 254,
           colorScale: "earth",
         },
@@ -43,7 +46,8 @@ const getLayerOptions = (item: Item): GeotiffOptions => {
       return {
         name: "Intersection Layer",
         rendererOptions: {
-          displayMin: 0,
+          clampLow: false,
+          displayMin: 1,
           displayMax: 255,
           colorScale: "earth",
         },
@@ -64,15 +68,31 @@ type State = {
     lng: number;
   } | null;
   geoJsonData: Object | null
+  regionData: Object | null,
+  isRegionModalVisible: boolean,
+  regionTitle: string,
+  isResultCircleVisible: boolean,
 };
 
 type Props = {
   selectedMenuItem: Item;
+  selectMenuItem: (item: Item) => void;
 };
 
 interface Osm {
   overlayRef: React.RefObject<GeotiffLayer>;
 }
+
+const mapLinksMock = [
+  {item: Item.hydro, name: Item[Item.hydro]},
+  {item: Item.relief, name: Item[Item.relief]}
+];
+
+const defaultMapCoordinates = {
+  lat: 58.8592,
+  lng: 95.1103,
+  zoom: 4
+};
 
 class Osm extends Component<Props, State> {
   constructor(props: Props) {
@@ -81,35 +101,82 @@ class Osm extends Component<Props, State> {
   }
 
   state = {
-    lat: 59.8873,
-    lng: 29.1103,
-    zoom: 11,
+    ...defaultMapCoordinates,
     selectedPoint: null as {
       lat: number;
       lng: number;
       value: number | null | undefined;
     } | null,
-    geoJsonData: [] as GeoJSON.GeoJsonObject[]
+    geoJsonData: [] as GeoJSON.GeoJsonObject[],
+    regionData: [] as GeoJSON.GeoJsonObject[],
+    isRegionModalVisible: false,
+    regionTitle: '',
+    isResultCircleVisible: false
   };
+
+  onEachFeature = (feature: any, layer: any) => {
+    layer.on({
+      click: this.clickToFeature.bind(this)
+    });
+  }
+
+  clickToFeature = (e: any) => {
+     var layer = e.target;
+     this.setState({
+       lat: e.latlng.lat,
+       lng: e.latlng.lng,
+       zoom: 8,
+       regionTitle: layer.feature.properties.local_name || layer.feature.properties.name
+     });
+     this.showRegionModal();
+     console.log(e);
+  }
 
   setSelectedPoint(
     point: { lat: number; lng: number; value: number | null | undefined } | null
   ) {
-    this.setState({ selectedPoint: point });
+    this.setState({ selectedPoint: point, isResultCircleVisible: false });
+  }
+
+  showRegionModal = () => {
+    if(this.state.regionTitle && this.state.regionData.length > 0) {
+     this.setState({ isRegionModalVisible: true });
+    }
+  }
+
+  handleRegionModalChoose = (item: Item) => {
+    this.setState({ isRegionModalVisible: false });
+    this.props.selectMenuItem(item);
+  }
+
+  handleRegionModalCancel = () => {
+    this.setState({ isRegionModalVisible: false, ...defaultMapCoordinates });
+  }
+
+  showResultCircle = () => {
+    this.setState({ isResultCircleVisible: true });
+    this.props.selectMenuItem(Item.inds_pd);
+    console.log('show res circle');
   }
 
   componentDidMount() {
     loadJSON('http://localhost:8000/cadastr.geojson', (data: GeoJSON.GeoJsonObject) => {
       this.setState({ geoJsonData: [data] });
     });
+
+    loadJSON('http://localhost:8000/adm/lenobl.geojson', (data: GeoJSON.GeoJsonObject) => {
+      this.setState({regionData: [data]})
+    })
   }
 
   componentDidUpdate(prevProps: Props) {
     if (
       this.state.selectedPoint &&
-      this.props.selectedMenuItem !== prevProps.selectedMenuItem
-    )
+      this.props.selectedMenuItem !== prevProps.selectedMenuItem &&
+      this.props.selectedMenuItem !== Item.inds_pd
+    ) {
       this.setSelectedPoint(null);
+    }
   }
 
   render() {
@@ -122,66 +189,97 @@ class Osm extends Component<Props, State> {
     };
 
     return (
-      <Map
-        center={[this.state.lat, this.state.lng]}
-        zoom={this.state.zoom}
-        onclick={(event: LeafletMouseEvent) => {
-          const value = getDataFromLayer(event.latlng, this.overlayRef.current);
-          this.setSelectedPoint({ ...event.latlng, value });
-          console.log("event", event);
-        }}
-      >
-        <LayersControl position="topright">
-          <BaseLayer checked name={Item.topography.toString()}>
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-          </BaseLayer>
-
-          <Overlay name={currentItem.toString()}>
-            {currentItem !== Item.topography && currentItem !== Item.cadastr ? (
-              <PlottyGeotiffLayer
-                layerRef={this.overlayRef}
-                options={getLayerOptions(currentItem)}
-                url={`http://localhost:8000/${currentItemName}.tif`}
+      <>
+        <Map
+          center={[this.state.lat, this.state.lng]}
+          zoom={this.state.zoom}
+          onClick={(event: LeafletMouseEvent) => {
+            const value = getDataFromLayer(event.latlng, this.overlayRef.current);
+            this.setSelectedPoint({ ...event.latlng, value });
+          }}
+        >
+          <LayersControl position="topright">
+            <BaseLayer checked name={Item.topography.toString()}>
+              <TileLayer
+                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-            ) : null}            
-          </Overlay>
+            </BaseLayer>
 
-          {currentItem === Item.cadastr && this.state.geoJsonData.length > 0 ? (
-              <GeoJSON key="cadastr" data={this.state.geoJsonData} />
-            ) : null }
+            {currentItem === Item.topography && this.state.regionData.length > 0 ? (
+                <GeoJSON key="region" data={this.state.regionData} onEachFeature={this.onEachFeature}/>
+              ) : null }
 
-          {this.state.selectedPoint && currentItem !== Item.topography ? (
-            <Marker
-              position={[
-                this.state.selectedPoint.lat,
-                this.state.selectedPoint.lng,
-              ]}
-            >
-              <Tooltip permanent>
-                <div className="point-data">
-                  <div className="point-data__coordinates">
-                    {`Координаты: [${roundCoordinate(
-                      this.state.selectedPoint.lat
-                    )}, ${roundCoordinate(this.state.selectedPoint.lng)}]`}
+            <Overlay name={currentItem.toString()}>
+              {currentItem !== Item.topography && currentItem !== Item.cadastr ? (
+                <PlottyGeotiffLayer
+                  layerRef={this.overlayRef}
+                  options={getLayerOptions(currentItem)}
+                  url={`http://localhost:8000/${currentItemName}.tif`}
+                />
+              ) : null}            
+            </Overlay>
+
+            {currentItem === Item.cadastr && this.state.geoJsonData.length > 0 ? (
+                <GeoJSON key="cadastr" data={this.state.geoJsonData}/>
+              ) : null }
+
+            {this.state.selectedPoint && currentItem !== Item.topography ? (
+              <Marker
+                position={[
+                  this.state.selectedPoint.lat,
+                  this.state.selectedPoint.lng,
+                ]}
+                onclick={(e) => {
+                  e.originalEvent.stopPropagation(); 
+                  e.originalEvent.preventDefault();
+                  this.showResultCircle();
+                }}
+              >
+                <Tooltip permanent interactive>
+                  <div className="point-data">
+                    <div className="point-data__coordinates">
+                      {`Координаты: [${roundCoordinate(
+                        this.state.selectedPoint.lat
+                      )}, ${roundCoordinate(this.state.selectedPoint.lng)}]`}
+                    </div>
+                    <div className="point-data__value">
+                      {`Значение: ${
+                        this.state.selectedPoint.value
+                          ? this.state.selectedPoint.value
+                          : "0"
+                      }`}
+                    </div>
+                    <Button>Сделать рассчет</Button>
                   </div>
-                  <div className="point-data__value">
-                    {`Значение: ${
-                      this.state.selectedPoint.value
-                        ? this.state.selectedPoint.value
-                        : "0"
-                    }`}
-                  </div>
-                </div>
-              </Tooltip>
-            </Marker>
-          ) : (
-            ""
-          )}
-        </LayersControl>
-      </Map>
+                </Tooltip>
+              </Marker>
+            ) : (
+              ""
+            )}
+            {this.state.selectedPoint && this.state.isResultCircleVisible ? (
+              <Circle
+                center={this.state.selectedPoint}
+                radius={15000}
+              />
+            ) : ''}
+
+          </LayersControl>
+        </Map>
+        <Modal
+          title={this.state.regionTitle}
+          visible={this.state.isRegionModalVisible}
+          onCancel={this.handleRegionModalCancel}
+          footer={[
+            <Button key="back" onClick={this.handleRegionModalCancel}>Отмена</Button>
+          ]}
+        >
+          <List
+            dataSource={mapLinksMock}
+            renderItem={ item => <List.Item onClick={() => this.handleRegionModalChoose(item.item)}>{ item.item }</List.Item>}
+          />
+        </Modal>
+      </>
     );
   }
 }

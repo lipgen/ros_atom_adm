@@ -23,7 +23,7 @@ function Map() {
             <SiderMenu onItemClick={changeMapState} selectedItem={mapState} />
           </div>
           <div className="m-three-sub-two">
-            <Osm selectedMenuItem={mapState} />
+            <Osm selectedMenuItem={mapState} selectMenuItem={changeMapState}/>
           </div>
         </div>
       </div>
