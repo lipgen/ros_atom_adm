@@ -19,6 +19,8 @@ export enum Item {
   cadastr = "СКВАЖИНЫ КАДАСТРА ПОДЗЕМНЫХ ВОД",
 }
 
+export const getKeyByValueFromItem = (sourceItem: Item) => (Object.entries(Item).find((item) => item[1] === sourceItem)?.[0]);
+
 const items = [Item.topography, Item.hydro, Item.relief, Item.inds_pd, Item.cadastr];
 
 type Props = {

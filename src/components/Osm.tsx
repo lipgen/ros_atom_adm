@@ -6,7 +6,7 @@ import {
   PlottyGeotiffLayer,
   GeotiffOptions,
 } from "./GeotiffLayer";
-import { Item } from "./SiderMenu";
+import { Item, getKeyByValueFromItem } from "./SiderMenu";
 import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
 import { getDataFromLayer, loadJSON } from "../utils";
@@ -84,8 +84,8 @@ interface Osm {
 }
 
 const mapLinksMock = [
-  {item: Item.hydro, name: typeof Item.hydro},
-  {item: Item.relief, name: typeof Item.relief}
+  {item: Item.hydro, name: getKeyByValueFromItem(Item.hydro)},
+  {item: Item.relief, name: getKeyByValueFromItem(Item.relief)}
 ];
 
 const defaultMapCoordinates = {
@@ -156,7 +156,6 @@ class Osm extends Component<Props, State> {
   showResultCircle = () => {
     this.setState({ isResultCircleVisible: true });
     this.props.selectMenuItem(Item.inds_pd);
-    console.log('show res circle');
   }
 
   componentDidMount() {
@@ -182,7 +181,7 @@ class Osm extends Component<Props, State> {
   render() {
     const position = [this.state.lat, this.state.lng];
     const currentItem = this.props.selectedMenuItem;
-    const currentItemName: string = typeof currentItem;
+    const currentItemName = getKeyByValueFromItem(currentItem);
 
     const roundCoordinate = (coordinate: number) => {
       return Number(coordinate).toFixed(4);
