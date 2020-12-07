@@ -84,8 +84,8 @@ interface Osm {
 }
 
 const mapLinksMock = [
-  {item: Item.hydro, name: Item[Item.hydro]},
-  {item: Item.relief, name: Item[Item.relief]}
+  {item: Item.hydro, name: typeof Item.hydro},
+  {item: Item.relief, name: typeof Item.relief}
 ];
 
 const defaultMapCoordinates = {
@@ -182,7 +182,7 @@ class Osm extends Component<Props, State> {
   render() {
     const position = [this.state.lat, this.state.lng];
     const currentItem = this.props.selectedMenuItem;
-    const currentItemName: string = Item[currentItem];
+    const currentItemName: string = typeof currentItem;
 
     const roundCoordinate = (coordinate: number) => {
       return Number(coordinate).toFixed(4);

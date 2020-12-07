@@ -12,11 +12,11 @@ import "../styles/SiderMenu.less";
 // ]
 
 export enum Item {
-  topography = "ТОПОГРАФИЧЕСКАЯ КАРТА" as any,
-  hydro = "ГИДРОГЕОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI" as any,
-  relief = "ГЕОМОРФОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI" as any,
-  inds_pd = "УРОВЕНЬ ГЛУБИНЫ ГРУНТОВЫХ ВОД" as any,
-  cadastr = "СКВАЖИНЫ КАДАСТРА ПОДЗЕМНЫХ ВОД" as any,
+  topography = "ТОПОГРАФИЧЕСКАЯ КАРТА",
+  hydro = "ГИДРОГЕОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI",
+  relief = "ГЕОМОРФОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI",
+  inds_pd = "УРОВЕНЬ ГЛУБИНЫ ГРУНТОВЫХ ВОД",
+  cadastr = "СКВАЖИНЫ КАДАСТРА ПОДЗЕМНЫХ ВОД",
 }
 
 const items = [Item.topography, Item.hydro, Item.relief, Item.inds_pd, Item.cadastr];
