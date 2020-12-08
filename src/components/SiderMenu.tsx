@@ -34,21 +34,38 @@ type Props = {
   onItemClick: (item: Item) => void;
 };
 
-function SiderMenu(props: Props) {
+const renderItem = (
+  i: number,
+  onItemClick: (item: Item) => void,
+  item: Item,
+  selectedItem: Item,
+) => <li
+  key={i}
+  onClick={() => onItemClick(item)}
+  className={
+    item === selectedItem ? "sider-menu__selected" : ""
+  }
+>
+  <span className="sider-text">{item}</span>
+</li>
+
+const renderItems = (items: Item[], selectedItem: Item, onItemClick: (item: Item) => void) => {
+  if (selectedItem === Item.topography) {
+    return renderItem(0, onItemClick, items[0], selectedItem);
+  }
+
+  return items.map((item: Item, i: number) => renderItem(i, onItemClick, item, selectedItem));
+}
+
+const SiderMenu = (props: Props) => {
+  const {
+    selectedItem,
+    onItemClick,
+  } = props;
   return (
     <div className="sider-menu">
       <ul className="list">
-        {items.map((item, i) => (
-          <li
-            key={i}
-            onClick={() => props.onItemClick(item)}
-            className={
-              item === props.selectedItem ? "sider-menu__selected" : ""
-            }
-          >
-            <span className="sider-text">{item}</span>
-          </li>
-        ))}
+        { renderItems(items, selectedItem, onItemClick) }
       </ul>
     </div>
   );

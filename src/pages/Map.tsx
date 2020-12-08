@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Osm from "../components/Osm";
 import SiderMenu, { Item } from "../components/SiderMenu";
 
-function Map() {
+const Map = () => {
   const [mapState, setMapState] = useState(Item.topography);
 
   function changeMapState(item: Item) {
