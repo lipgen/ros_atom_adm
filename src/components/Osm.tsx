@@ -94,6 +94,12 @@ const defaultMapCoordinates = {
   zoom: 3
 };
 
+const SpbLo = {
+  lat: 59.975,
+  lng: 29.583,
+  zoom: 7,
+};
+
 class Osm extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -176,13 +182,8 @@ class Osm extends Component<Props, State> {
     ) {
       this.setSelectedPoint(null);
     }
-    if (this.props.selectedMenuItem === Item.inds_pd && this.props.selectedMenuItem !== prevProps.selectedMenuItem) {
-      // TODO: use consts instead of bold coords
-      this.setState({
-        lat: 59.975,
-        lng: 29.583,
-        zoom: 7,
-      })
+    if (this.props.selectedMenuItem === Item.topography && this.props.selectedMenuItem !== prevProps.selectedMenuItem) {
+      this.setState({...defaultMapCoordinates});
     }
   }
 
