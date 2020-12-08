@@ -89,9 +89,9 @@ const mapLinksMock = [
 ];
 
 const defaultMapCoordinates = {
-  lat: 58.8592,
-  lng: 95.1103,
-  zoom: 4
+  lat: 64.95,
+  lng: 92.64,
+  zoom: 3
 };
 
 class Osm extends Component<Props, State> {
@@ -176,6 +176,14 @@ class Osm extends Component<Props, State> {
     ) {
       this.setSelectedPoint(null);
     }
+    if (this.props.selectedMenuItem === Item.inds_pd && this.props.selectedMenuItem !== prevProps.selectedMenuItem) {
+      // TODO: use consts instead of bold coords
+      this.setState({
+        lat: 59.975,
+        lng: 29.583,
+        zoom: 7,
+      })
+    }
   }
 
   render() {
@@ -210,7 +218,11 @@ class Osm extends Component<Props, State> {
               ) : null }
 
             <Overlay name={currentItem.toString()}>
-              {currentItem !== Item.topography && currentItem !== Item.cadastr ? (
+              {
+                currentItem !== Item.topography
+                  // permanently hidden
+                  // && currentItem !== Item.cadastr
+                  ? (
                 <PlottyGeotiffLayer
                   layerRef={this.overlayRef}
                   options={getLayerOptions(currentItem)}
@@ -219,9 +231,10 @@ class Osm extends Component<Props, State> {
               ) : null}            
             </Overlay>
 
-            {currentItem === Item.cadastr && this.state.geoJsonData.length > 0 ? (
-                <GeoJSON key="cadastr" data={this.state.geoJsonData}/>
-              ) : null }
+            {/* permanently hidden*/}
+            {/*{currentItem === Item.cadastr && this.state.geoJsonData.length > 0 ? (*/}
+            {/*    <GeoJSON key="cadastr" data={this.state.geoJsonData}/>*/}
+            {/*  ) : null }*/}
 
             {this.state.selectedPoint && currentItem !== Item.topography ? (
               <Marker
@@ -249,7 +262,7 @@ class Osm extends Component<Props, State> {
                           : "0"
                       }`}
                     </div>
-                    <Button>Сделать рассчет</Button>
+                    <Button>Сделать расчёт</Button>
                   </div>
                 </Tooltip>
               </Marker>

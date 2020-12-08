@@ -13,15 +13,21 @@ import "../styles/SiderMenu.less";
 
 export enum Item {
   topography = "ТОПОГРАФИЧЕСКАЯ КАРТА",
-  hydro = "ГИДРОГЕОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI",
-  relief = "ГЕОМОРФОЛОГИЧЕСКАЯ КАРТА ЛИСТА 0-35-VI",
+  hydro = "ПОВЕРХНОСТЬ УРОВНЯ ПОДЗЕМНЫХ ВОД",
+  relief = "ПОВЕРХНОСТЬ РЕЛЬЕФА",
   inds_pd = "УРОВЕНЬ ГЛУБИНЫ ГРУНТОВЫХ ВОД",
-  cadastr = "СКВАЖИНЫ КАДАСТРА ПОДЗЕМНЫХ ВОД",
+  // cadastr = "СКВАЖИНЫ КАДАСТРА ПОДЗЕМНЫХ ВОД",
 }
 
 export const getKeyByValueFromItem = (sourceItem: Item) => (Object.entries(Item).find((item) => item[1] === sourceItem)?.[0]);
 
-const items = [Item.topography, Item.hydro, Item.relief, Item.inds_pd, Item.cadastr];
+const items = [
+  Item.topography,
+  Item.hydro,
+  Item.relief,
+  Item.inds_pd,
+  // Item.cadastr,
+];
 
 type Props = {
   selectedItem: Item;
