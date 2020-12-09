@@ -59,14 +59,18 @@ const getLayerOptions = (item: Item): GeotiffOptions => {
   }
 };
 
+type SelectedPoint = {
+  lat: number;
+  lng: number;
+  value: number | null | undefined;
+  dialog?: boolean;
+}
+
 type State = {
   lat: number;
   lng: number;
   zoom: number;
-  selectedPoint: {
-    lat: number;
-    lng: number;
-  } | null;
+  selectedPoint: SelectedPoint | null;
   geoJsonData: Object | null
   regionData: Object | null,
   isRegionModalVisible: boolean,
@@ -112,6 +116,7 @@ class Osm extends Component<Props, State> {
       lat: number;
       lng: number;
       value: number | null | undefined;
+      dialog: boolean;
     } | null,
     geoJsonData: [] as GeoJSON.GeoJsonObject[],
     regionData: [] as GeoJSON.GeoJsonObject[],
@@ -139,7 +144,7 @@ class Osm extends Component<Props, State> {
   }
 
   setSelectedPoint(
-    point: { lat: number; lng: number; value: number | null | undefined } | null
+    point: SelectedPoint | null
   ) {
     this.setState({ selectedPoint: point, isResultCircleVisible: false });
   }
@@ -160,6 +165,17 @@ class Osm extends Component<Props, State> {
   }
 
   showResultCircle = () => {
+    const { selectedPoint } = this.state;
+    // center to selected point and close dialog after
+    if (selectedPoint?.lat && selectedPoint?.lng) this.setState({
+      lat: selectedPoint.lat,
+      lng: selectedPoint.lng,
+      zoom: 9,
+      selectedPoint: {
+        ...selectedPoint,
+        dialog: false,
+      }
+    });
     this.setState({ isResultCircleVisible: true });
     this.props.selectMenuItem(Item.inds_pd);
   }
@@ -203,7 +219,7 @@ class Osm extends Component<Props, State> {
           zoom={this.state.zoom}
           onClick={(event: LeafletMouseEvent) => {
             const value = getDataFromLayer(event.latlng, this.overlayRef.current);
-            this.setSelectedPoint({ ...event.latlng, value });
+            this.setSelectedPoint({ ...event.latlng, value, dialog: true });
           }}
         >
           <LayersControl position="topright">
@@ -249,7 +265,7 @@ class Osm extends Component<Props, State> {
                   this.showResultCircle();
                 }}
               >
-                <Tooltip permanent interactive>
+                {this.state.selectedPoint.dialog && <Tooltip permanent interactive>
                   <div className="point-data">
                     <div className="point-data__coordinates">
                       {`Координаты: [${roundCoordinate(
@@ -265,7 +281,7 @@ class Osm extends Component<Props, State> {
                     </div>
                     <Button>Сделать расчёт</Button>
                   </div>
-                </Tooltip>
+                </Tooltip>}
               </Marker>
             ) : (
               ""
