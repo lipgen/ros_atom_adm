@@ -33,9 +33,9 @@ const hardcodedResponse = {
   error: null,
   profile: {
     email: "user@mail.com",
-    firstName: "Сергей",
-    lastName: "Воропаев",
-    patronimic: "Валерьевич",
+    firstName: "А.",
+    lastName: "А.",
+    patronimic: "Пользователь",
   },
 };
 

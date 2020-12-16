@@ -1,16 +1,12 @@
-import React, { Component } from "react";
-import L, { LeafletMouseEvent } from "leaflet";
-import { LayersControl, Map, TileLayer, Marker, Tooltip, GeoJSON, GeoJSONProps, Circle } from "react-leaflet";
-import {
-  GeotiffLayer,
-  PlottyGeotiffLayer,
-  GeotiffOptions,
-} from "./GeotiffLayer";
-import { Item, getKeyByValueFromItem } from "./SiderMenu";
+import React, {Component} from "react";
+import L, {LeafletMouseEvent} from "leaflet";
+import {Circle, GeoJSON, LayersControl, Map, Marker, TileLayer, Tooltip} from "react-leaflet";
+import {GeotiffLayer, GeotiffOptions, PlottyGeotiffLayer,} from "./GeotiffLayer";
+import {getKeyByValueFromItem, Item} from "./SiderMenu";
 import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
-import { getDataFromLayer, loadJSON } from "../utils";
-import { Modal, Button, List, Typography, Divider } from 'antd';
+import {getDataFromLayer, loadJSON} from "../utils";
+import {Button, List, Modal} from 'antd';
 
 const { Overlay, BaseLayer } = LayersControl;
 
@@ -161,7 +157,7 @@ class Osm extends Component<Props, State> {
   }
 
   handleRegionModalCancel = () => {
-    this.setState({ isRegionModalVisible: false, ...defaultMapCoordinates });
+    this.setState({ isRegionModalVisible: false });
   }
 
   showResultCircle = () => {
@@ -178,6 +174,30 @@ class Osm extends Component<Props, State> {
     });
     this.setState({ isResultCircleVisible: true });
     this.props.selectMenuItem(Item.inds_pd);
+  }
+
+  defineInds_pdClass = (value: number): JSX.Element | null => {
+    if (value >= 51 && value < 102) return <span>&#8544;</span>;
+    if (value >= 102 && value < 204) return <span>&#8545;</span>;
+    if (value >= 204 && value < 255) return <span>&#8546;</span>;
+
+    return null;
+  }
+
+  spanWrap = (text: string, value?: number, romanClass?: boolean): JSX.Element => <span>
+    {text}
+    {(romanClass && value) && this.defineInds_pdClass(value)}
+  </span>;
+
+  getValueName = (value: number): JSX.Element => {
+    const {selectedMenuItem} = this.props;
+    switch (selectedMenuItem) {
+      case Item.hydro: return this.spanWrap(`Высота уровня подземных вод ${value} м.`);
+      case Item.relief: return this.spanWrap(`Высота над уровнем моря ${value} м.`);
+      case Item.inds_pd: return this.spanWrap(`Класс: `, value, true);
+
+      default: return this.spanWrap('Значение');
+    }
   }
 
   componentDidMount() {
@@ -222,7 +242,9 @@ class Osm extends Component<Props, State> {
             this.setSelectedPoint({ ...event.latlng, value, dialog: true });
           }}
         >
-          <LayersControl position="topright">
+          <LayersControl
+            position="topright"
+          >
             <BaseLayer checked name={Item.topography.toString()}>
               <TileLayer
                 attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -245,7 +267,7 @@ class Osm extends Component<Props, State> {
                   options={getLayerOptions(currentItem)}
                   url={`http://localhost:8000/${currentItemName}.tif`}
                 />
-              ) : null}            
+              ) : null}
             </Overlay>
 
             {/* permanently hidden*/}
@@ -273,11 +295,8 @@ class Osm extends Component<Props, State> {
                       )}, ${roundCoordinate(this.state.selectedPoint.lng)}]`}
                     </div>
                     <div className="point-data__value">
-                      {`Значение: ${
-                        this.state.selectedPoint.value
-                          ? this.state.selectedPoint.value
-                          : "0"
-                      }`}
+                      {typeof this.state.selectedPoint.value === 'number' ?
+                        this.getValueName(this.state.selectedPoint.value) : null}
                     </div>
                     <Button>Сделать расчёт</Button>
                   </div>
