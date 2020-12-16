@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css";
 import "../styles/Osm.less";
 import {getDataFromLayer, loadJSON} from "../utils";
 import {Button, List, Modal} from 'antd';
+import Legend from "./Legend.js";
 
 const { Overlay, BaseLayer } = LayersControl;
 
@@ -313,6 +314,7 @@ class Osm extends Component<Props, State> {
             ) : ''}
 
           </LayersControl>
+          {currentItem === Item.inds_pd && <Legend/>}
         </Map>
         <Modal
           title={this.state.regionTitle}
