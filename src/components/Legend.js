@@ -6,19 +6,19 @@ class Legend extends MapControl {
 
   componentDidMount() {
     // get color depending on population density value
-    const getColor = (d) => {
-      if (d === '0') return '#FFEDA0';
-      if (d === '\u2160') return '#FEB24C';
-      if (d === '\u2161') return '#FC4E2A';
-      if (d === '\u2162') return '#BD0026';
-      if (d === '\u2163') return '#800026';
+    const getColor = (d, i) => {
+      if (d === '0') return '#FFF';
+      if (d === '\u2160') return '#66D060';
+      if (d === '\u2161') return i === 3 ? '#8B4513' : '#E9EA6F';
+      if (d === '\u2162') return '#C4B2A2';
+      // if (d === '\u2163') return '#800026';
     };
 
     const legend = L.control({ position: "bottomright" });
 
     legend.onAdd = () => {
       const div = L.DomUtil.create("div", "info legend");
-      const grades = ['0', '\u2160', '\u2161', '\u2162', '\u2163'];
+      const grades = ['0', '\u2160', '\u2161', '\u2161', '\u2162'];
       let labels = [];
       let from;
       let to;
@@ -29,7 +29,7 @@ class Legend extends MapControl {
 
         labels.push(
           '<i style="background:' +
-          getColor(from) +
+          getColor(from, i) +
           '"></i> ' +
           from +
           (to ? "&ndash;" + to : "+")
